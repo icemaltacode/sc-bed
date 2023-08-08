@@ -1,0 +1,21 @@
+{
+  "name": "ninjacoders",
+  "version": "1.0.0",
+  "description": "The website for NinjaCoders, showcasing coding projects made by ICE students and promoting coding events and meetups.",
+  "main": "app.mjs",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "ninjacoders",
+    "coding",
+    "programming",
+    "education"
+  ],
+  "author": "Keith Vassallo",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2",
+    "express-handlebars": "^7.1.2"
+  }
+}
