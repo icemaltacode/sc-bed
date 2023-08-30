@@ -1,0 +1,16 @@
+{
+  "name": "sc-bed-profilepage-complete",
+  "version": "1.0.0",
+  "description": "A profile page built using Node, Express and Handlebars",
+  "main": "app.mjs",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Keith Vassallo",
+  "license": "ISC",
+  "dependencies": {
+    "es-main": "^1.2.0",
+    "express": "^4.18.2",
+    "express-handlebars": "^7.1.2"
+  }
+}
