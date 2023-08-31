@@ -1,0 +1,229 @@
+{{#section 'head'}}
+<style>
+    .form-popup {
+        box-sizing: border-box;
+        display: none;
+        position: fixed;
+        bottom: 0;
+        border: 3px solid #f1f1f1;
+        z-index: 9;
+    }
+
+    .form-container {
+        box-sizing: border-box;
+        max-width: 400px;
+        padding: 10px;
+        background-color:#8CD49C;
+        color: #1B3330;
+    }
+
+    .form-container input[type=text], .form-container input[type=email], .form-container textarea {
+        box-sizing: border-box;
+        width: 100%;
+        padding: 15px;
+        margin: 5px 0 22px 0;
+        border: none;
+        background: #f1f1f1;
+        font-family: 'Poppins', sans-serif;
+    }
+    
+    .form-container input[type=text]:focus, .form-container input[type=email]:focus, .form-container textarea:focus {
+        background-color: #ddd;
+        outline: none;
+    }
+
+    .form-container .btn {
+        background-color: #1B3330;
+        color: white;
+        padding: 16px 20px;
+        border: none;
+        cursor: pointer;
+        width: 100%;
+        margin-bottom:10px;
+        opacity: 0.8;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    .form-container .cancel {
+        background-color: red;
+        display: none;
+    }
+
+    .form-container .btn:hover, .open-button:hover {
+        opacity: 1;
+    }
+
+    .form-container h1 {
+        margin-top: 0px;
+        margin-bottom: 5px;
+    }
+
+    .form-container #x {
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        left: -25px;
+        top: -25px;
+        border: 2px solid #1B3330;
+        color: #1B3330;
+        position: relative;
+    }
+
+    .form-container #x:hover {
+        background-color: #feef88;
+        cursor: pointer;
+    }
+
+    .form-container #contact-result {
+        display: none;
+        color: #ffffff;
+        background-color: #1B3330;
+        padding: 16px 20px;
+        border: none;
+        margin-bottom:10px;
+        opacity: 0.8;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    @media only screen and (min-width: 1000px) {
+        .form-popup {
+            right: 15px;
+        }
+
+        .form-container h1 {
+            margin-top: -30px;
+        }
+    }
+
+    @media only screen and (max-width: 415px) {
+        .form-popup {
+            right: 0;
+        }
+
+        .form-container #x {
+            display: none;
+        }
+
+        .form-container h1 {
+            margin-top: 0px;
+        }
+
+        .form-container .cancel {
+            background-color: red;
+            display: block;
+        }
+    }
+
+    @media only screen and (max-width: 999px) {
+        .form-popup {
+            right: 15px;
+        }
+    }
+</style>
+{{/section}}
+
+<div class="form-popup" id="contact-form">
+    <form class="form-container" id="contactForm">
+        <button type="button" id="x" onclick="closeForm()">
+            X
+        </button>
+
+        <h1>Let's Chat 💬</h1>
+
+        <label for="name"><b>Name</b></label>
+        <input type="text" placeholder="Your Name" name="name" required>
+
+        <label for="email"><b>Email</b></label>
+        <input type="email" placeholder="Your Email" name="email" required>
+
+        <label for="message"><b>Message</b></label>
+        <textarea name="message" placeholder="Your Message" rows="5" required></textarea>
+
+        <div id="contact-result">
+            ✅ Your message has been sent.
+        </div>
+
+        <button type="submit" class="btn" id="btn-send">Send</button>
+        <button type="button" class="btn cancel" onclick="closeForm()" id="btn-cancel">Close</button>
+    </form>
+</div>
+
+{{#section 'scripts'}}
+<script>
+function openForm() {
+    document.getElementById("contact-form").style.display = "block";
+    document.getElementById("btn-send").style.display = "block";
+    document.getElementById("contact-result").style.display = "none";
+}
+  
+function closeForm() {
+    document.getElementById("contact-form").style.display = "none";
+}
+
+document.addEventListener('mouseup', function(e) {
+    var container = document.getElementById('contact-form');
+    if (!container.contains(e.target)) {
+        closeForm();
+    }
+});
+
+function showContactStatus() {
+    document.getElementById("btn-send").style.display = "none";
+    document.getElementById("contact-result").style.display = "block";
+}
+
+const form = document.getElementById('contactForm');
+const url = '/api/contact';
+const toast = document.getElementById('contact-result');
+const submit = document.getElementById('btn-send');
+
+function post(url, body, callback) {
+  var req = new XMLHttpRequest();
+  req.open("POST", url, true);
+  req.setRequestHeader("Content-Type", "application/json");
+  req.addEventListener("load", function () {
+    if (req.status < 400) {
+      callback(null, JSON.parse(req.responseText));
+    } else {
+      callback(new Error("Request failed: " + req.statusText));
+    }
+  });
+  req.send(JSON.stringify(body));
+}
+
+function success () {
+  toast.innerHTML = '✅ Your message has been sent.'
+  toast.style.backgroundColor = '#1B3330'
+  toast.style.color = 'white'
+  submit.disabled = false
+  submit.blur()
+  form.name.focus()
+  form.name.value = ''
+  form.email.value = ''
+  form.message.value = ''
+}
+function error (err) {
+  toast.innerHTML = '😭 Welp! That didn\'t work.'
+  toast.style.color = 'white'
+  toast.style.backgroundColor = 'red'
+  submit.disabled = false
+  console.log(err)
+}
+form.addEventListener('submit', function (e) {
+  e.preventDefault()
+  showContactStatus()
+  toast.innerHTML = '⏲️ Sending...'
+  toast.style.color = 'black'
+  toast.style.backgroundColor = '#feef88'
+  const payload = {
+    name: form.name.value,
+    email: form.email.value,
+    content: form.message.value
+  }
+  post(url, payload, function (err, res) {
+    if (err) { return error(err) }
+    success()
+  })
+});
+</script>
+{{/section}}

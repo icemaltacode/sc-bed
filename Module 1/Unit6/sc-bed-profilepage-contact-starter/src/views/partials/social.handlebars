@@ -1,0 +1,36 @@
+{{#section "head"}}
+<style>
+    #social_bar img {
+        max-height: 30px;
+    }
+
+    #social_bar img:hover {
+        filter: brightness(0) saturate(100%) invert(91%) sepia(7%) saturate(2142%)
+            hue-rotate(72deg) brightness(92%) contrast(80%);
+    }
+    #social_bar {
+        display: flex;
+        gap: 20px;
+    }
+
+    @media only screen and (min-width: 1000px) {
+        #social_bar {
+            align-items: flex-start;
+        }
+    }
+
+    @media only screen and (max-width: 999px) {
+        #social_bar {
+            justify-content: center;
+        }
+    }
+</style>
+{{/section}}
+
+<div id="social_bar">
+    {{#each partials.socialContext}}
+        <a href="{{url}}" target="_blank">
+            <img src="{{imagePath}}" alt="{{altText}}" title="{{title}}">
+        </a>
+    {{/each}}
+</div>
