@@ -1,0 +1,68 @@
+<div class="card">
+  <div class="card-header">
+    Add a Todo
+  </div>
+  <div class="card-body">
+    <form id="todoForm">
+        <div class="row">
+            <div class="col-xs-4 col-md-10">
+                <input type="text" class="form-control form-control-lg" id="content" name="content" placeholder="Add your todo here" required>
+            </div>
+            <div class="col-xs-8 col-md-2">
+                <button type="submit" class="btn btn-primary btn-lg">Add</button>
+            </div>
+        </div>
+    </form>
+  </div>
+</div>
+<div class="card">
+  <div class="card-header">
+    Todos
+  </div>
+  <div class="card-body">
+    <ul class="list-group">
+        {{#if todos}}
+            {{#each todos}}
+            <li class="list-group-item">
+                <input class="form-check-input me-1" type="checkbox" value="" id="checkbox-{{@index}}" {{#if this.completed}}checked{{/if}}>
+                <label class="form-check-label stretched-link {{#if this.completed}}completed{{/if}}" for="checkbox-{{@index}}">{{this.content}}</label>
+            </li>
+            {{/each}}
+        {{else}}
+            <p>You have no todos at the moment.</p>
+        {{/if}}
+    </ul>
+  </div>
+</div>
+{{#section 'scripts'}}
+<script>
+    document.getElementById('todoForm').addEventListener('submit', evt => addTodo(evt));
+    for (todo of document.getElementsByClassName("form-check-input")) {
+        todo.addEventListener('click', evt => toggleTodo(evt));
+    }
+    
+    function addTodo(evt) {
+        evt.preventDefault();
+        const form = evt.target;
+        const body = JSON.stringify({
+            content: form.elements.content.value,
+        });
+        const headers = { 'Content-Type': 'application/json' };
+        fetch('/todos', { method: 'post', body, headers })
+            .then(res => {
+                if(res.status < 200 || res.status >= 300)
+                    throw new Error(`Request failed with status ${res.status}`);
+                window.location.replace('/');
+            })
+            .catch(err => {
+                console.log(err);
+            });
+    }
+
+    function toggleTodo(evt) {
+        const todoId = evt.target.id.split('-')[1];
+        fetch(`/todos/${todoId}`, { method: 'put'}) 
+            .then(res => window.location.replace('/'));
+    }
+</script>
+{{/section}}
