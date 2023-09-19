@@ -50,6 +50,10 @@
   </div>
   <div class="card-body">
     <h3>&euro;{{cart.total}}</h3>
+    <form method="post" action="/checkout">
+      <input type="email" name="email" class="form-control" required>
+      <button type="submit" class="btn btn-primary"><i class="bi-cash-stack"></i> Checkout</button>
+    </form>
   </div>
 </div>
 {{else}}

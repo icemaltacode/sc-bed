@@ -74,6 +74,7 @@ app.get('/cart', handlers.cart);
 app.post('/add-to-cart', handlers.addToCart);
 app.post('/change-cart-item-qty', handlers.changeCartItemQty);
 app.post('/delete-from-cart', handlers.deleteFromCart);
+app.post('/checkout', handlers.checkout);
 
 // Ajax Newsletter
 app.get('/newsletter', handlers.newsletter);

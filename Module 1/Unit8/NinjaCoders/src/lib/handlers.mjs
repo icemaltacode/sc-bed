@@ -3,6 +3,8 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { productsById } from './middleware/products.mjs';
+import credentials from '../../config.mjs';
+import emailService from './mailer.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -42,7 +44,7 @@ export const api = {
     newsletterSignup: (req, res) => {
         const VALID_EMAIL_REGEX = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
-        const csrf = req.body._csrf;
+        //const csrf = req.body._csrf;
         const name = req.body.name;
         const email = req.body.email;
 
@@ -51,17 +53,21 @@ export const api = {
             return;
         }
 
-        console.log('CSRF:', csrf);
-        console.log('Name:', name);
-        console.log('Email:', email);
-        
-        req.session.flash = {
-            type: 'success',
-            intro: 'Thank you!',
-            message: 'You have now been signed up for the newsletter.'
-        };
-
-        res.send({ result: 'success' });
+        const mailer = emailService(credentials);
+        mailer.send(email, 'NinjaCoders Newsletter Subscription', 
+            `Hi ${name}, \nThank you for signing up to the NinjaCoders Newsletter. You'll be hearing from us soon!`)
+            .then(() => {
+                req.session.flash = {
+                    type: 'success',
+                    intro: 'Thank you!',
+                    message: 'You have now been signed up for the newsletter.'
+                };
+                res.send({ result: 'success' });
+            })
+            .catch(err => {
+                console.log('Failed to send mail: ', err.message);
+                res.send( { result: 'error', error: 'Failed to send email.' });
+            });
     },
     setupPhotoContest: (req, res, fields, files) => {
         const uploadedFile = files.photo[0];
@@ -163,6 +169,27 @@ export function deleteFromCart(req, res) {
     
     res.redirect('/cart');
 }
+
+export function checkout(req, res) {
+    const { cart } = req.session;
+    const email = req.body.email;
+
+    res.render('email/cart-thank-you', { layout: null, cart: cart }, (err,html) => {
+        if (err) console.log('Error in email template.');
+
+        const mailer = emailService(credentials);
+        mailer.send(email, 'NinjaCoders - Thank You For Your Purchase', 
+            html)
+            .then(info => {
+                console.log('Sent: ', info);
+                req.session.cart = { items: [] };
+                res.render('cart-thank-you', { email: email });
+            })
+            .catch(err => {
+                console.error('Unable to send confirmation: ', err.message);
+            });
+    });
+}
 // -----------------------------------------------------------------------------------------------
 
 // ERROR HANDLING --------------------------------------------------------------------------------
@@ -189,5 +216,6 @@ export default {
     masterclass,
     addToCart,
     changeCartItemQty,
-    deleteFromCart
+    deleteFromCart,
+    checkout
 };
