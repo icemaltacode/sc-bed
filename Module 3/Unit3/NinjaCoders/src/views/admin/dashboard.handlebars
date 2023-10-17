@@ -1,0 +1,19 @@
+<h1>NinjaCoders Admin</h1>
+<p>Select the admin function you need</p>
+<ul>
+    <li><a href="/products">Product Management</a></li>
+    <li><a href="/showcases">Showcase Management</a></li>
+</ul>
+{{#section 'scripts'}}
+{{#if context}}
+<script>
+    const localUserData = {
+        userEmail: "{{context.user.email}}",
+        token: "{{context.user.token}}",
+        refreshToken: "{{context.user.refreshToken}}",
+        lastRefresh: new Date()
+    };
+    localStorage.setItem('localUserData', JSON.stringify(localUserData));
+</script>
+{{/if}}
+{{/section}}
