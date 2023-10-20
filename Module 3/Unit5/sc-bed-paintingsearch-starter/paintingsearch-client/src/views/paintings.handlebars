@@ -1,0 +1,84 @@
+<h1>Painting Search</h1>
+
+<div class="card">
+    <div class="card-header">Search</div>
+    <div class="card-body" id="search_area">
+        <form class="row" name="search_from" id="search_form">
+            <div class="col-10">
+                <input type="text" class="form-control" id="search_input"
+                    placeholder="Search for an artist or work name" required>
+            </div>
+            <div class="col-2">
+                <button type="submit" class="btn btn-primary">Search</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="d-flex justify-content-center" style="margin-top: 10px;">
+  <div class="spinner-border" id="loading_spinner" role="status" style="display: none;">
+  </div>
+</div>
+
+<div class="card" style="margin-top: 10px; display: none;" id="search_results_area">
+    <div class="card-header" id="results_header">Results</div>
+    <div class="card-body" id="result_list"></div>
+</div>
+
+{{#section 'scripts'}}
+<script>
+    const BASE_URI = "http://localhost:3001/api/paintings";
+    document.getElementById('search_form').addEventListener('submit', handleForm);
+
+    function handleForm(evt) {
+        evt.preventDefault();
+
+        document.getElementById('search_results_area').style.display = 'none';
+        document.getElementById('loading_spinner').style.display = 'block';
+        const searchTerm = document.getElementById('search_input').value;
+        document.getElementById('search_input').value = '';
+        const startTime = new Date();
+        fetch(`${BASE_URI}?searchTerm=${searchTerm}`)
+            .then(result => result.json())
+            .then(result => {
+                const elapsedTime = Math.abs(new Date().getTime() - startTime.getTime())/1000
+                parseResults(result, elapsedTime, searchTerm);
+            });
+    }
+
+    function parseResults(results, elapsedTime, searchTerm) {
+        document.getElementById('search_results_area').style.display = 'block';
+        document.getElementById('results_header').innerHTML = `Results for '${searchTerm}'`;
+        
+        let resultHtml = '';
+        if (results.paintings.length === 0) {
+            resultHtml = "No results returned";
+        } else {
+            resultHtml += `<div class="card" style="margin: 10px; padding: 10px;">
+                <strong>Fetched ${results.paintings.length} paintings in ${elapsedTime}s from ${results.resultSource}</strong>
+            </div>`;
+
+            for (const result of results.paintings) {
+                resultHtml += `<div class="card" style="margin: 10px;">
+                    <div class="list-group list-group-flush">
+                        <li class="list-group-item"><strong>Title: </strong>${result.work_name}</li>
+                        <li class="list-group-item"><strong>Artist: </strong>
+                            ${result.artist_name} 
+                            ${('artist_nationality' in result) && '[' + result.artist_nationality + ']'}
+                            ${('artist_birth' in result) && '(' + result.artist_birth + ' - ' + result.artist_death + ')'}
+                        </li>
+                        <li class="list-group-item"><strong>Style: </strong>${result.work_style}</li>
+                        ${('work_subject' in result) ? 
+                            '<li class="list-group-item"><strong>Subject: </strong>' + result.work_subject + '</li>'
+                        : ''}
+                    </div>
+                </div>`;
+            }
+        }
+
+        
+        document.getElementById('loading_spinner').style.display = 'none';
+        document.getElementById('result_list').innerHTML = resultHtml;
+    }
+</script>
+{{/section}}
