@@ -36,6 +36,9 @@ jspm_packages/
 .env.production.local
 .env.local
 
+# Credential files
+.credentials.*
+
 # DynamoDB Local files
 .dynamodb/
 
