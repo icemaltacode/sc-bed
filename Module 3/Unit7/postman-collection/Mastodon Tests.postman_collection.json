@@ -1,0 +1,390 @@
+{
+	"info": {
+		"_postman_id": "afae5858-1050-4868-b9f0-94beb3e8671c",
+		"name": "Mastodon Tests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "2431004"
+	},
+	"item": [
+		{
+			"name": "Fetch By Tag",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://mastodon.social/api/v1/timelines/tag/{{tag}}?limit=10",
+					"protocol": "https",
+					"host": [
+						"mastodon",
+						"social"
+					],
+					"path": [
+						"api",
+						"v1",
+						"timelines",
+						"tag",
+						"{{tag}}"
+					],
+					"query": [
+						{
+							"key": "limit",
+							"value": "10"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post Status",
+			"request": {
+				"auth": {
+					"type": "oauth2",
+					"oauth2": [
+						{
+							"key": "clientSecret",
+							"value": "{{client_secret}}",
+							"type": "string"
+						},
+						{
+							"key": "accessTokenUrl",
+							"value": "https://mastodon.social/oauth/token",
+							"type": "string"
+						},
+						{
+							"key": "scope",
+							"value": "read write push",
+							"type": "string"
+						},
+						{
+							"key": "authUrl",
+							"value": "https://mastodon.social/oauth/authorize",
+							"type": "string"
+						},
+						{
+							"key": "redirect_uri",
+							"value": "urn:ietf:wg:oauth:2.0:oob",
+							"type": "string"
+						},
+						{
+							"key": "clientId",
+							"value": "{{client_id}}",
+							"type": "string"
+						},
+						{
+							"key": "tokenName",
+							"value": "Account Token",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "status",
+							"value": "This is a sample post from Postman",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://mastodon.social/api/v1/statuses",
+					"protocol": "https",
+					"host": [
+						"mastodon",
+						"social"
+					],
+					"path": [
+						"api",
+						"v1",
+						"statuses"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Upload Attachment",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"pm.collectionVariables.set(\"attachment_id\", jsonData.id);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "oauth2",
+					"oauth2": [
+						{
+							"key": "clientSecret",
+							"value": "{{client_secret}}",
+							"type": "string"
+						},
+						{
+							"key": "accessTokenUrl",
+							"value": "https://mastodon.social/oauth/token",
+							"type": "string"
+						},
+						{
+							"key": "scope",
+							"value": "read write push",
+							"type": "string"
+						},
+						{
+							"key": "authUrl",
+							"value": "https://mastodon.social/oauth/authorize",
+							"type": "string"
+						},
+						{
+							"key": "redirect_uri",
+							"value": "urn:ietf:wg:oauth:2.0:oob",
+							"type": "string"
+						},
+						{
+							"key": "clientId",
+							"value": "{{client_id}}",
+							"type": "string"
+						},
+						{
+							"key": "tokenName",
+							"value": "Account Token",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "logo.jpg"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://mastodon.social/api/v2/media",
+					"protocol": "https",
+					"host": [
+						"mastodon",
+						"social"
+					],
+					"path": [
+						"api",
+						"v2",
+						"media"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post Status with Media",
+			"request": {
+				"auth": {
+					"type": "oauth2",
+					"oauth2": [
+						{
+							"key": "clientSecret",
+							"value": "{{client_secret}}",
+							"type": "string"
+						},
+						{
+							"key": "accessTokenUrl",
+							"value": "https://mastodon.social/oauth/token",
+							"type": "string"
+						},
+						{
+							"key": "scope",
+							"value": "read write push",
+							"type": "string"
+						},
+						{
+							"key": "authUrl",
+							"value": "https://mastodon.social/oauth/authorize",
+							"type": "string"
+						},
+						{
+							"key": "redirect_uri",
+							"value": "urn:ietf:wg:oauth:2.0:oob",
+							"type": "string"
+						},
+						{
+							"key": "clientId",
+							"value": "{{client_id}}",
+							"type": "string"
+						},
+						{
+							"key": "tokenName",
+							"value": "Account Token",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "status",
+							"value": "This is a sample post from Postman, with an image!",
+							"type": "text"
+						},
+						{
+							"key": "media_ids[]",
+							"value": "{{attachment_id}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://mastodon.social/api/v1/statuses",
+					"protocol": "https",
+					"host": [
+						"mastodon",
+						"social"
+					],
+					"path": [
+						"api",
+						"v1",
+						"statuses"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Statuses NinjaCoders",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://mastodon.social/api/v1/accounts/111290027120900799/statuses",
+					"protocol": "https",
+					"host": [
+						"mastodon",
+						"social"
+					],
+					"path": [
+						"api",
+						"v1",
+						"accounts",
+						"111290027120900799",
+						"statuses"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Verify Token",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "test",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://mastodon.social/api/v1/accounts/verify_credentials",
+					"protocol": "https",
+					"host": [
+						"mastodon",
+						"social"
+					],
+					"path": [
+						"api",
+						"v1",
+						"accounts",
+						"verify_credentials"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "tag",
+			"value": "coding"
+		},
+		{
+			"key": "client_id",
+			"value": "TblYDMn4chq_GKSqIsQZHiAR3hR7zmwiXMO7YdrrCMc",
+			"type": "string"
+		},
+		{
+			"key": "client_secret",
+			"value": "equVkiK583SBosxp2yG1peXINPY-bgLvPlKaCrS-5mA",
+			"type": "string"
+		},
+		{
+			"key": "redirect_uri",
+			"value": "urn:ietf:wg:oauth:2.0:oob",
+			"type": "string"
+		},
+		{
+			"key": "access_token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "attachment_id",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
